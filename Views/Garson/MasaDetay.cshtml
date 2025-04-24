@@ -1,0 +1,63 @@
+﻿@model RestoranUygulama.ViewModel.MasaDetayViewModel
+@{
+    ViewData["Title"] = "Masa Detay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4">Masa @Model.Masa.MasaNumarasi Detayı</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Masa Durumu: <span class="@(Model.Masa.DoluMu ? "text-danger" : "text-success")">@(Model.Masa.DoluMu ? "Dolu" : "Boş")</span></h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Masa.DoluMu && Model.AktifRezervasyonId.HasValue)
+        {
+            var aktifRezervasyon = Model.BugunRezervasyonlar.FirstOrDefault(r => r.Id == Model.AktifRezervasyonId);
+            if (aktifRezervasyon != null)
+            {
+                <div class="alert alert-info">
+                    <h5>Aktif Rezervasyon Bilgileri</h5>
+                    <p><strong>Müşteri Adı:</strong> @aktifRezervasyon.MusteriAdi</p>
+                    <p><strong>Rezervasyon Saati:</strong> @aktifRezervasyon.RezervasyonTarihi.ToString("HH:mm")</p>
+
+                    <form asp-controller="Garson" asp-action="MasayiBosalt" method="post">
+                        <input type="hidden" name="masaId" value="@Model.Masa.Id" />
+                        <button type="submit" class="btn btn-warning">Masayı Boşalt</button>
+                    </form>
+                </div>
+            }
+        }
+
+        @if (!Model.Masa.DoluMu && Model.BugunRezervasyonlar.Any())
+        {
+            <h5 class="mb-3">Bugünkü Rezervasyonlar</h5>
+            <div class="list-group">
+                @foreach (var rezervasyon in Model.BugunRezervasyonlar.OrderBy(r => r.RezervasyonTarihi))
+                {
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6>@rezervasyon.MusteriAdi</h6>
+                                <small>@rezervasyon.RezervasyonTarihi.ToString("HH:mm")</small>
+                            </div>
+                            <form asp-controller="Garson" asp-action="RezervasyonAktifEt" method="post">
+                                <input type="hidden" name="rezervasyonId" value="@rezervasyon.Id" />
+                                <button type="submit" class="btn btn-success btn-sm">Müşteri Geldi</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else if (!Model.Masa.DoluMu)
+        {
+            <p>Bugün için rezervasyon bulunmamaktadır.</p>
+        }
+    </div>
+</div>
+
+<div class="mb-3">
+    <a asp-controller="Garson" asp-action="Index" class="btn btn-secondary">Masalara Dön</a>
+    <a asp-controller="Rezervasyon" asp-action="Detay" asp-route-masaId="@Model.Masa.Id" class="btn btn-primary">Tüm Rezervasyonları Görüntüle</a>
+</div>

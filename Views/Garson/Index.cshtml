@@ -1,0 +1,36 @@
+﻿
+@{
+    ViewData["Title"] = "Masalar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4">Masalar</h2>
+
+<div class="row">
+    @foreach (var masa in Model)
+    {
+            <div class="col-md-3 mb-3">
+                <div class="card @(masa.DoluMu ? "border-danger" : "border-success")">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Masa @masa.MasaNumarasi</h5>
+                        <p class="card-text">Durum: @(masa.DoluMu ? "Dolu" : "Boş")</p>
+                        <div class="d-flex justify-content-center">
+                            <a asp-controller="Rezervasyon" asp-action="Detay" asp-route-masaId="@masa.Id" class="btn btn-primary btn-sm me-2">Düzenle</a>
+                          
+                        <div class="d-flex justify-content-center">
+                            <a asp-controller="Garson" asp-action="MasaDetay" asp-route-masaId="@masa.Id" class="btn btn-info btn-sm me-2">Detay</a>
+                            <form asp-controller="Garson" asp-action="DurumDegistir" method="post" class="d-inline">
+                                <input type="hidden" name="masaId" value="@masa.Id" />
+                                <button type="submit" class="btn @(masa.DoluMu ? "btn-success" : "btn-danger") btn-sm">
+                                    @(masa.DoluMu ? "Boş Yap" : "Dolu Yap")
+                                </button>
+                            </form>
+                        </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+    }
+</div>
+

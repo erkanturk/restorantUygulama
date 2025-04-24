@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Masa " + ViewBag.MasaNumarasi + " - Rezervasyon Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Masa @ViewBag.MasaNumarasi - Rezervasyon Ekle</h4>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                }
+
+                <form asp-action="Ekle" method="post">
+                    <input type="hidden" name="masaId" value="@ViewBag.MasaId" />
+                    <div class="form-group mb-3">
+                        <label class="form-label">Müşteri Adı</label>
+                        <input type="text" name="musteriAdi" class="form-control" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">Rezervasyon Tarihi</label>
+                        <input type="date" name="rezervasyonTarihi" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success">Kaydet</button>
+                        <a asp-controller="Rezervasyon" asp-action="Detay" asp-route-masaId="@ViewBag.MasaId" class="btn btn-secondary">Geri</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
