@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using RestoranUygulama.Models; // Model ve DbContext sýnýflarýnýn namespace'i
+using RestoranUygulama.Models;
+using RestoranUygulama.DataContext; // Model ve DbContext sýnýflarýnýn namespace'i
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,32 +66,3 @@ app.MapControllerRoute(
 app.Run();
 
 // DbInitializer sýnýfý (baþlangýç verilerini eklemek için, daha önce tanýmlanmýþtý)
-public static class DbInitializer
-{
-    public static void Initialize(RestoranContext context)
-    {
-        context.Database.EnsureCreated(); // Veritabaný yoksa oluþtur
-
-        // Eðer Masalar tablosu boþsa, 10 masa ekle
-        if (!context.Masalar.Any())
-        {
-            for (int i = 1; i <= 10; i++)
-            {
-                context.Masalar.Add(new Masa { MasaNumarasi = i, DoluMu = false });
-            }
-            context.SaveChanges();
-        }
-
-        // Test amaçlý bir garson kullanýcýsý ekle (þifre düz metin, üretimde hash'lenmeli)
-        if (!context.Kullanicilar.Any())
-        {
-            context.Kullanicilar.Add(new Kullanici
-            {
-                KullaniciAdi = "garson1",
-                Sifre = "12345",
-                Rol = "Garson"
-            });
-            context.SaveChanges();
-        }
-    }
-}
